@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vimeo Video Tracker</title>
+    <script src="https://player.vimeo.com/api/player.js"></script>
+</head>
+<body>
+    <iframe id="vimeo-player" src="https://player.vimeo.com/video/1059912308" width="640" height="360" frameborder="0" allowfullscreen></iframe>
+
+    <script>
+        var iframe = document.getElementById('vimeo-player');
+        var player = new Vimeo.Player(iframe);
+
+        player.on('ended', function() {
+            // Send a message to Jotform when video is fully watched
+            window.parent.postMessage({ videoWatched: true }, '*');
+        });
+    </script>
+</body>
+</html>

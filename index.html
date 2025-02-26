@@ -15,7 +15,7 @@
 
         player.on('ended', function() {
             // Send "YES" to Jotform when the video ends
-            window.parent.postMessage({ videoWatched: "YES" }, '*');
+            window.parent.postMessage("YES", "*");
         });
     </script>
 </body>

@@ -14,7 +14,7 @@
         var player = new Vimeo.Player(iframe);
 
         player.on('ended', function() {
-            // Send "YES" to Jotform with the correct object name
+            // Send "YES" to Jotform when the video ends
             window.parent.postMessage({"Video Watched": "YES"}, "*");
         });
     </script>

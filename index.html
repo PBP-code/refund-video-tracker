@@ -14,9 +14,15 @@
         var player = new Vimeo.Player(iframe);
 
         player.on('ended', function() {
-            // Send "YES" to Jotform when the video ends, but do NOT force visibility
-            window.parent.postMessage({"Video Watched": "YES"}, "*");
+            let message = { type: "videoStatus", status: "YES" };
+            console.log("Sending message to parent:", message);
+            window.parent.postMessage(message, "*"); // Allow cross-origin messages
         });
+
+        // Debugging: Listen for messages sent from this page
+        window.addEventListener("message", function(event) {
+            console.log("Received message from parent:", event.data);
+        }, false);
     </script>
 </body>
 </html>

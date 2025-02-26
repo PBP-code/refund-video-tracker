@@ -14,7 +14,7 @@
         var player = new Vimeo.Player(iframe);
 
         player.on('ended', function() {
-            // Send "YES" to Jotform when the video ends
+            // Send "YES" to Jotform when the video ends, but do NOT force visibility
             window.parent.postMessage({"Video Watched": "YES"}, "*");
         });
     </script>

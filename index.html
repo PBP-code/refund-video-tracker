@@ -14,14 +14,29 @@
         var player = new Vimeo.Player(iframe);
 
         player.on('ended', function() {
-            let message = { helperVideo: "YES" }; // Matches Jotform's unique field name
+            let message = { helperVideo: "YES" };
             console.log("✅ Sending message to parent (Jotform):", JSON.stringify(message));
-            window.parent.postMessage(message, "*"); // Ensures Jotform can receive the message
+            window.parent.postMessage(JSON.stringify(message), "*"); // Send message to Jotform
         });
 
-        // Debugging: Listen for messages received
+        // 🔥 LISTEN FOR MESSAGES & FORCE JOTFORM TO UPDATE FIELD
         window.addEventListener("message", function(event) {
-            console.log("🔄 Received message from parent (Jotform):", event.data);
+            try {
+                let data = JSON.parse(event.data);
+                console.log("🔄 Jotform Received Message:", data);
+
+                // 🔥 FORCE JOTFORM TO UPDATE THE FIELD
+                let helperField = window.parent.document.querySelector("[name='helperVideo']");
+                if (helperField) {
+                    helperField.value = data.helperVideo;
+                    helperField.dispatchEvent(new Event('input', { bubbles: true })); // 🚀 Forces Jotform to process the update
+                    console.log("✅ Jotform Field Updated: helperVideo = YES");
+                } else {
+                    console.log("⚠️ Jotform Field 'helperVideo' Not Found!");
+                }
+            } catch (error) {
+                console.log("⚠️ Error Processing Message:", error);
+            }
         }, false);
     </script>
 </body>

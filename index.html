@@ -8,12 +8,10 @@
 </head>
 <body>
 
-    <!-- 🔹 Embed Full Jotform Source Code Below -->
-    <div id="jotform-form">
-        <!-- PASTE YOUR FULL JOTFORM SOURCE CODE HERE -->
-    </div>
+    <!-- 🔹 Embed Full Jotform -->
+    <iframe id="jotform-iframe" src="https://form.jotform.com/250505082852655" width="100%" height="800" frameborder="0"></iframe>
 
-    <!-- 🔹 Vimeo Video -->
+    <!-- 🔹 Embed Vimeo Video -->
     <iframe id="vimeo-player" src="https://player.vimeo.com/video/1059912308" width="100%" height="500" frameborder="0" allowfullscreen></iframe>
 
     <script>
@@ -21,15 +19,33 @@
         var player = new Vimeo.Player(iframe);
 
         player.on('ended', function() {
-            let helperVideoField = document.querySelector("[name='helperVideo']");
-            if (helperVideoField) {
-                helperVideoField.value = "YES";
-                helperVideoField.dispatchEvent(new Event('input', { bubbles: true }));
-                console.log("✅ Jotform Field Updated: helperVideo = YES");
-            } else {
-                console.log("⚠️ Jotform Field 'helperVideo' Not Found!");
-            }
+            let message = { helperVideo: "YES" };
+            console.log("✅ Sending message to Jotform:", JSON.stringify(message));
+
+            // 🔥 Send message to Jotform iFrame
+            let jotformIframe = document.getElementById("jotform-iframe").contentWindow;
+            jotformIframe.postMessage(JSON.stringify(message), "*");
         });
+
+        // 🔥 Listen for Messages from Jotform
+        window.addEventListener("message", function(event) {
+            try {
+                console.log("🔄 Received message from Jotform:", event.data);
+                let data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+
+                // 🔥 Find the "Helper Video Watched" field inside Jotform's iFrame
+                let helperField = document.querySelector("[name='helperVideo']");
+                if (helperField) {
+                    helperField.value = data.helperVideo;
+                    helperField.dispatchEvent(new Event('input', { bubbles: true })); // ✅ Force update
+                    console.log("✅ Jotform Field Updated: helperVideo = YES");
+                } else {
+                    console.log("⚠️ Jotform Field 'helperVideo' Not Found!");
+                }
+            } catch (error) {
+                console.log("⚠️ Error Processing Message:", error);
+            }
+        }, false);
     </script>
 
 </body>

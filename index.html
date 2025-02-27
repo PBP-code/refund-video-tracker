@@ -14,9 +14,9 @@
         var player = new Vimeo.Player(iframe);
 
         player.on('ended', function() {
-            let message = { field: "Helper Video Watched", value: "YES" }; // Send directly to Jotform
+            let message = { helperVideo: "YES" }; // Matches Jotform's unique field name
             console.log("✅ Sending message to parent (Jotform):", JSON.stringify(message));
-            window.parent.postMessage(JSON.stringify(message), "*"); // Ensures proper message format
+            window.parent.postMessage(message, "*"); // Ensures Jotform can receive the message
         });
 
         // Debugging: Listen for messages received

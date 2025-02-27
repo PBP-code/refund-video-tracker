@@ -14,25 +14,25 @@
         var player = new Vimeo.Player(iframe);
 
         player.on('ended', function() {
-            let message = { helperVideo: "YES" };
-            console.log("✅ Sending message to parent (Jotform):", JSON.stringify(message));
-            window.parent.postMessage(JSON.stringify(message), "*"); // Send message to Jotform
+            let message = JSON.stringify({ helperVideo: "YES" }); // ✅ Fix: Ensure proper JSON format
+            console.log("✅ Sending message to parent (Jotform):", message);
+            window.parent.postMessage(message, "*"); // ✅ Ensure cross-origin message passing
         });
 
-        // 🔥 LISTEN FOR MESSAGES & FORCE JOTFORM TO UPDATE FIELD
+        // 🔥 Listen for messages & force Jotform to update field
         window.addEventListener("message", function(event) {
             try {
-                let data = JSON.parse(event.data);
-                console.log("🔄 Jotform Received Message:", data);
+                console.log("🔄 Jotform Received Message:", event.data);
+                let data = JSON.parse(event.data); // ✅ Fix: Parse JSON correctly
 
-                // 🔥 FORCE JOTFORM TO UPDATE THE FIELD
+                // 🔥 Find the correct field inside Jotform
                 let helperField = window.parent.document.querySelector("[name='helperVideo']");
                 if (helperField) {
                     helperField.value = data.helperVideo;
-                    helperField.dispatchEvent(new Event('input', { bubbles: true })); // 🚀 Forces Jotform to process the update
+                    helperField.dispatchEvent(new Event('input', { bubbles: true })); // ✅ Force update
                     console.log("✅ Jotform Field Updated: helperVideo = YES");
                 } else {
-                    console.log("⚠️ Jotform Field 'helperVideo' Not Found!");
+                    console.log("⚠️ Jotform Field 'helperVideo' Not Found! Double-check field name.");
                 }
             } catch (error) {
                 console.log("⚠️ Error Processing Message:", error);

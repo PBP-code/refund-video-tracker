@@ -14,14 +14,14 @@
         var player = new Vimeo.Player(iframe);
 
         player.on('ended', function() {
-            let message = { type: "videoStatus", status: "YES" };
-            console.log("Sending message to parent:", message);
+            let message = { "Helper Video Watched": "YES" }; // Send directly to Jotform
+            console.log("Sending message to parent (Jotform):", message);
             window.parent.postMessage(message, "*"); // Allow cross-origin messages
         });
 
         // Debugging: Listen for messages sent from this page
         window.addEventListener("message", function(event) {
-            console.log("Received message from parent:", event.data);
+            console.log("Received message from parent (Jotform):", event.data);
         }, false);
     </script>
 </body>
